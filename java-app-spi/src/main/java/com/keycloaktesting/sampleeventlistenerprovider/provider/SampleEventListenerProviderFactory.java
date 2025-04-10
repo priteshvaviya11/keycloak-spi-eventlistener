@@ -8,14 +8,16 @@ import org.keycloak.models.KeycloakSessionFactory;
 
 public class SampleEventListenerProviderFactory implements EventListenerProviderFactory {
 
+	private String serverUri;
+	
 	@Override
 	public EventListenerProvider create(KeycloakSession session) {
-		return new SampleEventListenerProvider();
+		return new SampleEventListenerProvider(serverUri);
 	}
 
 	@Override
 	public void init(Scope config) {
-
+		this.serverUri = config.get("server-uri");
 	}
 
 	@Override
@@ -30,7 +32,7 @@ public class SampleEventListenerProviderFactory implements EventListenerProvider
 
 	@Override
 	public String getId() {
-		return "sample_event_listener";
+		return "http";
 	}
 
 }

@@ -9,13 +9,20 @@ import org.keycloak.events.admin.AdminEvent;
 
 public class SampleEventListenerProvider implements EventListenerProvider {
 	
-	public SampleEventListenerProvider() {
+	private final String serverUri;
+	
+	/*public SampleEventListenerProvider() {
 		
+	}*/
+
+	public SampleEventListenerProvider(String serverUri) {
+		this.serverUri = serverUri;
 	}
 
 	@Override
     public void onEvent(Event event) {
 		if(event.getType().toString() == "LOGIN") {
+			System.out.println("Displaying Server URI as passed from the Factory varaible setup : " + this.serverUri);
 			System.out.println("Event Occurred: XXXXXXXXXXXXXXXXXXXXXXX" + toString(event));
 		}
     }
