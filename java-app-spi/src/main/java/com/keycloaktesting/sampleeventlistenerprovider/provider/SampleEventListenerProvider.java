@@ -1,5 +1,6 @@
 package com.keycloaktesting.sampleeventlistenerprovider.provider;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -7,7 +8,16 @@ import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.admin.AdminEvent;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class SampleEventListenerProvider implements EventListenerProvider {
+	
+	private final OkHttpClient httpClient = new OkHttpClient();
+    private final MediaType JSON = MediaType.parse("application/json, charset=utf-8");
 	
 	private final String serverUri;
 	
@@ -19,18 +29,74 @@ public class SampleEventListenerProvider implements EventListenerProvider {
 		this.serverUri = serverUri;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
     public void onEvent(Event event) {
-		if(event.getType().toString() == "LOGIN") {
+		/*if(event.getType().toString() == "LOGIN") {
 			System.out.println("Displaying Server URI as passed from the Factory varaible setup : " + this.serverUri);
 			System.out.println("Event Occurred: XXXXXXXXXXXXXXXXXXXXXXX" + toString(event));
-		}
+		}*/
+		
+		//Let's get the events and publish them on to our rest api webhook endpoint.
+		String stringEvent = toString(event);
+		
+		try {
+            RequestBody body = RequestBody.create(JSON, stringEvent);
+
+            Request request = new Request.Builder()
+                    .url(this.serverUri)
+                    .post(body)
+                    .addHeader("User-Agent", "KeycloakHttp Bot")
+                    .addHeader("Content-Type", "application/json")
+                    .build();
+
+            
+            Response response = httpClient.newCall(request).execute();
+
+            if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + response);
+            }
+
+            // Get response body
+            System.out.println(response.body().string());
+        } catch(Exception e) {
+            System.out.println("UH OH!! " + e.toString());
+            e.printStackTrace();
+            return;
+        }
+		
+		
     }
 
     @Override
     public void onEvent(AdminEvent adminEvent, boolean b) {
 
-        System.out.println("Admin Event Occurred:" + toString(adminEvent));
+        //System.out.println("Admin Event Occurred:" + toString(adminEvent));
+        
+        String stringEvent = toString(adminEvent);
+        try {
+            RequestBody body = RequestBody.create(JSON, stringEvent);
+
+            Request request = new Request.Builder()
+                    .url(this.serverUri)
+                    .post(body)
+                    .addHeader("User-Agent", "KeycloakHttp Bot")
+                    .addHeader("Content-Type", "application/json")
+                    .build();
+
+            Response response = httpClient.newCall(request).execute();
+
+            if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + response);
+            }
+
+            // Get response body
+            System.out.println(response.body().string());
+        } catch(Exception e) {
+            System.out.println("UH OH!! " + e.toString());
+            e.printStackTrace();
+            return;
+        }
     }
 
     @Override
