@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Build-Jdk-Spec: 21
+Specification-Title: REST Provider 1
+Specification-Version: 26.1
+Specification-Vendor: JBoss by Red Hat
+Implementation-Title: REST Provider 1
+Implementation-Version: 26.1.4
+Implementation-Vendor: JBoss by Red Hat
+Created-By: Maven Integration for Eclipse
+Implementation-URL: http://keycloak.org/sample_event_listener
+Java-Vendor: Eclipse Adoptium
+Java-Version: 1.8
+Os-Arch: amd64
+Os-Name: Windows 11
+Os-Version: 10.0
+Scm-Connection: scm:git:git://github.com/keycloak/keycloak.git/sample_ev
+ ent_listener
+Scm-Revision: 
+Scm-Url: https://github.com/keycloak/keycloak/tree/master/sample_event_l
+ istener/
+
